@@ -11,7 +11,7 @@ def calculate_elapsed_time(start_time):
     return f"{int(hours)}:{int(minutes)}:{int(seconds)}"
 
 # Detects the operating system language
-system_language, _ = locale.getdefaultlocale()
+system_language, _ = locale.getlocale()
 
 # String dictionary based on language
 strings = {
@@ -29,7 +29,7 @@ strings = {
     },
 }
 
-# Verifies if the system language is available, otherwise, uses English as default
+# Verifies if the system language is available; otherwise, use English as default
 if system_language in strings:
     selected_strings = strings[system_language]
 else:
@@ -41,7 +41,9 @@ log_file = selected_strings['file_name']
 start_time = time.time()
 
 with open(log_file, "w") as file:
-    file.write("[ " + selected_strings['start_log'].format(time.strftime("%Y-%m-%d %H:%M:%S")) + " ]\n")
+    start_log_message = selected_strings['start_log'].format(time.strftime("%Y-%m-%d %H:%M:%S"))
+    file.write("[ " + start_log_message + " ]\n")
+    print(start_log_message)
 
 while True:
     current_time = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -50,8 +52,11 @@ while True:
     elapsed_time = calculate_elapsed_time(start_time)
 
     with open(log_file, "a") as file:
-        file.write("[ " + selected_strings['elapsed_time'].format(elapsed_time) + " ] ")
-        file.write("[ " + selected_strings['battery_level'].format(battery_percent) + " ]")
+        elapsed_time_message = selected_strings['elapsed_time'].format(elapsed_time)
+        battery_level_message = selected_strings['battery_level'].format(battery_percent)
+        file.write("[ " + elapsed_time_message + " ] ")
+        file.write("[ " + battery_level_message + " ]")
         file.write("\n")
+        print("[ " + elapsed_time_message + " ] " + "[ " + battery_level_message + " ]")
 
     time.sleep(60)  # Waits 60 seconds
